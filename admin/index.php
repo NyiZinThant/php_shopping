@@ -6,11 +6,11 @@ if (!isset($_SESSION['user_id']) and !isset($_SESSION['logged_in']) and $_SESSIO
   header('location: login.php');
 }
 if (isset($_POST['search'])) {
-  setcookie('search',$_POST['search'], time() + (86400 * 30), "/");
-}else{
+  setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+} else {
   if (empty($_GET['pageno'])) {
-    unset($_COOKIE['search']); 
-    setcookie('search', null, -1, '/'); 
+    unset($_COOKIE['search']);
+    setcookie('search', null, -1, '/');
   }
 }
 ?>
@@ -127,6 +127,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="order_list.php" class="nav-link">
+                <i class="nav-icon fas fa-table"></i>
+                <p>
+                  Order
+                </p>
+              </a>
+            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -147,27 +155,112 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  
+                  <?php
+                  if (empty($_POST['search']) and empty($_COOKIE['search'])) {
+                    if (!empty($_GET['pageno'])) {
+                      $pageno = $_GET['pageno'];
+                    } else {
+                      $pageno = 1;
+                    }
+                    $numOfRecord = 6;
+                    $offset = ($pageno - 1) * $numOfRecord;
+                    $statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+                    $statement->execute();
+                    $rawResult = $statement->fetchAll();
+
+                    $total_pages = ceil(count($rawResult) / $numOfRecord);
+                    $statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset,$numOfRecord");
+                    $statement->execute();
+                    $result = $statement->fetchAll();
+                  } else {
+                    $search = isset($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
+                    if (!empty($_GET['pageno'])) {
+                      $pageno = $_GET['pageno'];
+                    } else {
+                      $pageno = 1;
+                    }
+                    $numOfRecord = 6;
+                    $offset = ($pageno - 1) * $numOfRecord;
+                    $statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search%' ORDER BY id DESC");
+                    $statement->execute();
+                    $rawResult = $statement->fetchAll();
+
+                    $total_pages = ceil(count($rawResult) / $numOfRecord);
+                    $statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search%' ORDER BY id DESC LIMIT $offset,$numOfRecord");
+                    $statement->execute();
+                    $result = $statement->fetchAll();
+                  }
+                  ?>
                   <table class="table table-bordered">
                     <thead>
                       <tr>
                         <th style="width: 10px">#</th>
-                        <th style="width: 180px">Title</th>
+                        <th style="width: 180px">name</th>
                         <th>Description</th>
+                        <th>Category</th>
+                        <th>In Stock</th>
+                        <th>Price</th>
                         <th style="width: 160px">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                     
+                      <?php $i = 1;
+                      if ($result) : foreach ($result as $value) : ?>
+                          <?php
+                          $catStatement = $pdo->prepare("SELECT * FROM categories WHERE id=:id");
+                          $catStatement->execute([":id" => $value['category_id']]);
+                          $catResult = $catStatement->fetchAll();
+                          ?>
+                          <tr>
+                            <td><?= $i ?></td>
+                            <td><?= escape($value['name']) ?></td>
+                            <td>
+                              <div>
+                                <?= escape(substr($value['description'], 0, 30)) ?>
+                              </div>
+                            </td>
+                            <td><?= escape($catResult[0]['name']) ?></td>
+                            <td><?= escape($value['quantity']) ?></td>
+                            <td><?= escape($value['price']) . "$" ?></td>
+                            <td>
+                              <a href="product_edit.php?id=<?= $value['id'] ?>" class="btn btn-warning" type="button">Edit</a>
+                              <a href="product_delete.php?id=<?= $value['id'] ?>" class="btn btn-danger" onclick="return confirm('Are you sure to delete this Product');" type="button">Delete</a>
+                            </td>
+                          </tr>
+                      <?php $i++;
+                        endforeach;
+                      endif ?>
                     </tbody>
                   </table>
                 </div>
                 <div class="mx-3">
                   <nav aria-label="Page navigation">
-                    
+                    <ul class="pagination justify-content-end">
+                      <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                      <li class="page-item <?php if ($pageno <= 1) {
+                                              echo "disabled";
+                                            } ?>">
+                        <a class="page-link" href="<?php if ($pageno <= 1) {
+                                                      echo "#";
+                                                    } else {
+                                                      echo "?pageno=" . $pageno - 1;
+                                                    } ?>">Previous</a>
+                      </li>
+                      <li class="page-item"><a class="page-link" href="?pageno=<?= $pageno ?>"><?= $pageno ?></a></li>
+                      <li class="page-item <?php if ($pageno >= $total_pages) {
+                                              echo "disabled";
+                                            } ?>">
+                        <a class="page-link" href="<?php if ($pageno >= $total_pages) {
+                                                      echo "#";
+                                                    } else {
+                                                      echo "?pageno=" . $pageno + 1;
+                                                    } ?>">Next</a>
+                      </li>
+                      <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
+                    </ul>
                   </nav>
                 </div>
-                <a href="add.php" class="btn btn-success mx-3 mb-3" type="button">Create New Blog Post</a>
+                <a href="product_add.php" class="btn btn-success mx-3 mb-3" type="button">Create New Product</a>
                 <!-- /.card-body -->
               </div>
             </div>

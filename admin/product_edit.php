@@ -5,16 +5,18 @@ require "../config/common.php";
 if (!isset($_SESSION['user_id']) and !isset($_SESSION['logged_in']) and $_SESSION['role'] != 1) {
     header('location: login.php');
 }
+$statement = $pdo->prepare("SELECT * FROM products WHERE id=:id");
+$statement->execute([":id" => $_GET['id']]);
+$result = $statement->fetchAll();
 if ($_POST) {
     $name = $_POST['name'];
     $description = $_POST['description'];
     $category = $_POST['category'];
     $quantity = $_POST['quantity'];
     $price = $_POST['price'];
-    $image = $_FILES['image']['name'];
     if (
-        empty($name) or empty($description) or $_POST['category'] == 0 or empty($image)
-        or empty($quantity) or $quantity < 1 or empty($price) or $quantity < 1
+        empty($name) or empty($description) or $_POST['category'] == 0 or
+        empty($quantity) or $quantity < 1 or empty($price) or $quantity < 1
     ) {
         if (empty($name)) {
             $nameError = "Your product name is empty";
@@ -39,20 +41,26 @@ if ($_POST) {
         } else if (!empty($price) && is_int($price) != 1) {
             $priceError = "Price should be number only";
         }
-        if (empty($image)) {
-            $imageError = "Your product image is empty";
-        }
     } else {
-        $file = "images/" . ($image);
-        $imageType = pathinfo($file, PATHINFO_EXTENSION);
-        if ($imageType != "png" and $imageType != "jpg" and $imageType != "jpeg") {
-            $imageError = "Input must be png,jpg,jpeg";
-        } else {
-            move_uploaded_file($_FILES['image']['tmp_name'], $file,);
-            $statement = $pdo->prepare("INSERT INTO products(name,description,category_id,quantity,price,image,created_at) VALUES(:name,:description,:category_id,:quantity,:price,:image,NOW())");
-            $result = $statement->execute(array(":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price, ":image" => $image));
+        if (empty($_FILES['image']['name'])) {
+            $statement = $pdo->prepare("UPDATE products SET name=:name,description=:description,category_id=:category_id,quantity=:quantity,price=:price WHERE id=:id");
+            $result = $statement->execute([":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price,":id"=>$_GET['id']]);
             if ($result) {
-                echo "<script>alert('Product is Added');window.location.href='index.php';</script>";
+                echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
+            }
+        } else {
+            $image = $_FILES['image']['name'];
+            $file = "images/" . ($image);
+            $imageType = pathinfo($file, PATHINFO_EXTENSION);
+            if ($imageType != "png" and $imageType != "jpg" and $imageType != "jpeg") {
+                $imageError = "Input must be png,jpg,jpeg";
+            } else {
+                move_uploaded_file($_FILES['image']['tmp_name'], $file,);
+                $statement = $pdo->prepare("UPDATE products SET name=:name,description=:description,category_id=:category_id,quantity=:quantity,price=:price,image=:image WHERE id=:id");
+                $result = $statement->execute([":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price, ":image" => $image,":id"=>$_GET['id']]);
+                if ($result) {
+                    echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
+                }
             }
         }
     }
@@ -173,42 +181,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <form action="product_add.php" method="post" enctype="multipart/form-data">
+                                    <form action="" method="post" enctype="multipart/form-data">
                                         <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
                                         <div class="form-group">
                                             <label for="name">Name</label>
                                             <p class="text-danger d-inline-block ml-2"><?= empty($nameError) ? "" : "*" . $nameError ?></p>
-                                            <input type="text" class="form-control" id="name" name="name">
+                                            <input type="text" class="form-control" id="name" name="name" value="<?= escape($result[0]['name']) ?>">
                                         </div>
                                         <div class="form-group">
                                             <label for="description">Description</label>
                                             <p class="text-danger d-inline-block ml-2"><?= empty($descriptionError) ? "" : "*" . $descriptionError ?></p>
-                                            <textarea type="text" class="form-control" id="description" name="description"></textarea>
+                                            <textarea type="text" class="form-control" id="description" name="description"><?= escape($result[0]['description']) ?></textarea>
                                         </div>
                                         <?php
-                                        $statement = $pdo->prepare("SELECT * FROM categories");
-                                        $statement->execute();
-                                        $result = $statement->fetchAll();
+                                        $catStatement = $pdo->prepare("SELECT * FROM categories");
+                                        $catStatement->execute();
+                                        $catResult = $catStatement->fetchAll();
                                         ?>
                                         <div class="form-group">
                                             <label for="name">Category</label>
                                             <p class="text-danger d-inline-block ml-2"><?= empty($categoryError) ? "" : "*" . $categoryError ?></p>
                                             <select name="category" class="form-control" id="category">
-                                                <option value="0" selected>Select Category</option>
-                                                <?php foreach($result as $value): ?>
-                                                <option value="<?= $value['id'] ?>"><?= $value['name'] ?></option>
+                                                <?php foreach ($catResult as $value) : ?>
+                                                    <?php if ($result[0]['category_id'] == $value['id']) : ?>
+                                                        <option value="<?= $value['id'] ?>" selected><?= escape($value['name']) ?></option>
+                                                    <?php else : ?>
+                                                        <option value="<?= $value['id'] ?>"><?= escape($value['name']) ?></option>
+                                                    <?php endif ?>
                                                 <?php endforeach ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="quantity">Quantity</label>
                                             <p class="text-danger d-inline-block ml-2"><?= empty($quantityError) ? "" : "*" . $quantityError ?></p>
-                                            <input type="number" class="form-control" id="quantity" name="quantity">
+                                            <input type="number" class="form-control" id="quantity" value="<?= escape($result[0]['quantity']) ?>" name="quantity">
                                         </div>
                                         <div class="form-group">
                                             <label for="price">Price</label>
                                             <p class="text-danger d-inline-block ml-2"><?= empty($priceError) ? "" : "*" . $priceError ?></p>
-                                            <input type="number" class="form-control" id="price" name="price">
+                                            <input type="number" class="form-control" id="price" value="<?= escape($result[0]['price']) ?>" name="price">
+                                        </div>
+                                        <div class="d-flex justify-content-center">
+                                            <img src="./images/<?= escape($result[0]['image']) ?>" alt="product image">
                                         </div>
                                         <div class="form-group">
                                             <label for="image">Image</label>

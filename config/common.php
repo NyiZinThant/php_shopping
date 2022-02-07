@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and empty($_POST['search'])) {
         die();
     } else {
         unset($_SESSION['csrf']);
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
     }
 }
 

@@ -126,6 +126,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="order_list.php" class="nav-link">
+                                <i class="nav-icon fas fa-table"></i>
+                                <p>
+                                    Order
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -142,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Blogs Listings</h3>
+                                    <h3 class="card-title">User Listings</h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">

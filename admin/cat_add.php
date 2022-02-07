@@ -104,7 +104,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </li>
                         <li class="nav-item">
                             <a href="category.php" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
+                                <i class="nav-icon fas fa-list"></i>
                                 <p>
                                     Category
                                 </p>
@@ -115,6 +115,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
                                     Users
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="order_lis.php" class="nav-link">
+                                <i class="nav-icon fas fa-table"></i>
+                                <p>
+                                    Order
                                 </p>
                             </a>
                         </li>
