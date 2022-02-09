@@ -2,7 +2,7 @@
 session_start();
 require "config/config.php";
 require "config/common.php";
-if (!isset($_SESSION['user_id']) and !isset($_SESSION['logged_in']) and $_SESSION['username']) {
+if (!isset($_SESSION['user_id']) and !isset($_SESSION['logged_in']) and !isset($_SESSION['username'])) {
   header('location: login.php');
 }
 if (isset($_POST['search'])) {

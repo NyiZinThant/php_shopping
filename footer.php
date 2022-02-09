@@ -8,10 +8,11 @@
 <footer class="footer-area section_gap">
   <div class="container">
     <div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
-      <p class="footer-text m-0">
-        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-      </p>
+    <p class=" m-0">
+					Copyright &copy;<script>
+						document.write(new Date().getFullYear());
+					</script> All rights reserved
+				</p>
     </div>
   </div>
 </footer>
@@ -27,7 +28,6 @@
 <script src="js/jquery.magnific-popup.min.js"></script>
 <script src="js/owl.carousel.min.js"></script>
 <!--gmaps Js-->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
 <script src="js/gmaps.min.js"></script>
 <script src="js/main.js"></script>
 </body>

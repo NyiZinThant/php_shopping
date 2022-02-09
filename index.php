@@ -11,14 +11,26 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 	}
 	$numOfRecord = 6;
 	$offset = ($pageno - 1) * $numOfRecord;
-	$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
-	$statement->execute();
-	$rawResult = $statement->fetchAll();
+	if (isset($_GET['cid'])) {
+		$cid = $_GET['cid'];
+		$statement = $pdo->prepare("SELECT * FROM products WHERE category_id=:cid ORDER BY id DESC");
+		$statement->execute([":cid"=>$cid]);
+		$rawResult = $statement->fetchAll();
 
-	$total_pages = ceil(count($rawResult) / $numOfRecord);
-	$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset,$numOfRecord");
-	$statement->execute();
-	$result = $statement->fetchAll();
+		$total_pages = ceil(count($rawResult) / $numOfRecord);
+		$statement = $pdo->prepare("SELECT * FROM products  WHERE category_id=:cid ORDER BY id DESC LIMIT $offset,$numOfRecord");
+		$statement->execute([":cid"=>$cid]);
+		$result = $statement->fetchAll();
+	} else {
+		$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+		$statement->execute();
+		$rawResult = $statement->fetchAll();
+
+		$total_pages = ceil(count($rawResult) / $numOfRecord);
+		$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset,$numOfRecord");
+		$statement->execute();
+		$result = $statement->fetchAll();
+	}
 } else {
 	$search = isset($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
 	if (!empty($_GET['pageno'])) {
@@ -50,7 +62,7 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 					$catResult = $catStatement->fetchAll();
 					?>
 					<?php foreach ($catResult as $value) : ?>
-						<li class="main-nav-list"><a href="#"><span class="lnr lnr-arrow-right"></span><?= escape($value['name']) ?></a></li>
+						<li class="main-nav-list"><a href="index.php?cid=<?= $value['id'] ?>"><span class="lnr lnr-arrow-right"></span><?= escape($value['name']) ?></a></li>
 					<?php endforeach ?>
 				</ul>
 			</div>
@@ -101,7 +113,7 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 												<span class="ti-bag"></span>
 												<p class="hover-text">add to bag</p>
 											</a>
-											<a href="" class="social-info">
+											<a href="./product_detail.php?id=<?= $value['id'] ?>" class="social-info">
 												<span class="lnr lnr-move"></span>
 												<p class="hover-text">view more</p>
 											</a>
