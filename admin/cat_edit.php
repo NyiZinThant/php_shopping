@@ -2,7 +2,7 @@
 session_start();
 require "../config/config.php";
 require "../config/common.php";
-if (!isset($_SESSION['user_id']) and !isset($_SESSION['logged_in']) and $_SESSION['role'] != 1) {
+if (!isset($_SESSION['user_id']) or !isset($_SESSION['logged_in']) or $_SESSION['role'] == 0) {
     header('location: login.php');
 }
 if ($_POST) {

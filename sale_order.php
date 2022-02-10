@@ -50,6 +50,9 @@ if (!empty($_SESSION['cart'])) {
 <section class="order_details section_gap">
 	<div class="container">
 		<h3 class="title_confirmation">Thank you. Your order has been received.</h3>
+		<div class="text-center">
+			<a href="index.php">Return</a>
+		</div>
 	</div>
 </section>
 <!--================End Order Details Area =================-->
