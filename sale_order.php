@@ -5,12 +5,13 @@
 require "config/config.php";
 if (!empty($_SESSION['cart'])) {
 	$userId = $_SESSION['user_id'];
+	$total = 0;
 	foreach ($_SESSION['cart'] as $key => $qty) {
 		$id = str_replace("id", "", $key);
 		$statement = $pdo->prepare("SELECT * FROM products WHERE id=:id");
 		$statement->execute([":id" => $id]);
 		$result = $statement->fetch(PDO::FETCH_ASSOC);
-		$total = $result['price'] * $qty;
+		$total += $result['price'] * $qty;
 	}
 
 	//insert into sale_orders table

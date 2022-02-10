@@ -10,8 +10,10 @@ if($_POST){
     $statement = $pdo->prepare("SELECT * FROM products WHERE id=".$id);
     $statement->execute();
     $result=$statement->fetch(PDO::FETCH_ASSOC);
-    if($qty > $result['quantity'] or $_SESSION['cart']["id".$id] > $result['quantity']){
-        echo "<script>alert('no enough stock');window.location.href='product_detail.php?id=$id'</script>";
+    if($qty > $result['quantity'] 
+    // or $_SESSION['cart']["id".$id] > $result['quantity']
+    ){
+        echo "<script>alert('no enough stock');window.location.href='index.php'</script>";
     }else{
         if(isset($_SESSION['cart']["id".$id])){
             $_SESSION['cart']["id".$id] += $qty;

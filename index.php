@@ -111,7 +111,7 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 										<div class="prd-bottom">
 											<form action="add_to_cart.php" method="post">
 												<input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-												<input type="hidden" name="id" value="<?= escape($result[0]['id']) ?>">
+												<input type="hidden" name="id" value="<?= escape($value['id']) ?>">
 												<input type="hidden" name="qty" value="1">
 												<div class="social-info">
 													<button type="submit" style="padding: 0;margin: 0;border: none;background:none">
