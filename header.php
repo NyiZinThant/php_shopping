@@ -3,15 +3,15 @@ session_start();
 require "config/config.php";
 require "config/common.php";
 if (!isset($_SESSION['user_id']) and !isset($_SESSION['logged_in']) and !isset($_SESSION['username'])) {
-  header('location: login.php');
+	header('location: login.php');
 }
 if (isset($_POST['search'])) {
-  setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+	setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
 } else {
-  if (empty($_GET['pageno'])) {
-    unset($_COOKIE['search']);
-    setcookie('search', null, -1, '/');
-  }
+	if (empty($_GET['pageno'])) {
+		unset($_COOKIE['search']);
+		setcookie('search', null, -1, '/');
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -54,11 +54,23 @@ if (isset($_POST['search'])) {
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 				<div class="container">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a href="index.php" class="navbar-brand logo_h"><h4>PHP Shopping</h4></a>
+					<a href="index.php" class="navbar-brand logo_h">
+						<h4>PHP Shopping</h4>
+					</a>
 					<!-- Collect the nav links, forms, and other content for toggling -->
+					<?php
+					$cartCount = 0;
+					if (isset($_SESSION['cart'])) {
+						foreach ($_SESSION['cart'] as $id => $qty) {
+							$cartCount += $qty;
+						}
+					}
+
+
+					?>
 					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
 						<ul class="nav navbar-nav navbar-right menu_nav ml-auto">
-							<li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span></a></li>
+							<li class="nav-item"><a href="cart.php" class="cart"><span class="ti-bag"><?= $cartCount ?></span></a></li>
 							<li class="nav-item">
 								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
 							</li>

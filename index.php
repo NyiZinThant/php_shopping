@@ -13,21 +13,21 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 	$offset = ($pageno - 1) * $numOfRecord;
 	if (isset($_GET['cid'])) {
 		$cid = $_GET['cid'];
-		$statement = $pdo->prepare("SELECT * FROM products WHERE category_id=:cid ORDER BY id DESC");
-		$statement->execute([":cid"=>$cid]);
+		$statement = $pdo->prepare("SELECT * FROM products WHERE category_id=:cid AND quantity > 0 ORDER BY id DESC");
+		$statement->execute([":cid" => $cid]);
 		$rawResult = $statement->fetchAll();
 
 		$total_pages = ceil(count($rawResult) / $numOfRecord);
-		$statement = $pdo->prepare("SELECT * FROM products  WHERE category_id=:cid ORDER BY id DESC LIMIT $offset,$numOfRecord");
-		$statement->execute([":cid"=>$cid]);
+		$statement = $pdo->prepare("SELECT * FROM products  WHERE category_id=:cid AND quantity > 0 ORDER BY id DESC LIMIT $offset,$numOfRecord");
+		$statement->execute([":cid" => $cid]);
 		$result = $statement->fetchAll();
 	} else {
-		$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+		$statement = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC");
 		$statement->execute();
 		$rawResult = $statement->fetchAll();
 
 		$total_pages = ceil(count($rawResult) / $numOfRecord);
-		$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset,$numOfRecord");
+		$statement = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC LIMIT $offset,$numOfRecord");
 		$statement->execute();
 		$result = $statement->fetchAll();
 	}
@@ -40,12 +40,12 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 	}
 	$numOfRecord = 6;
 	$offset = ($pageno - 1) * $numOfRecord;
-	$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search%' ORDER BY id DESC");
+	$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search%' AND quantity > 0 ORDER BY id DESC");
 	$statement->execute();
 	$rawResult = $statement->fetchAll();
 
 	$total_pages = ceil(count($rawResult) / $numOfRecord);
-	$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search%' ORDER BY id DESC LIMIT $offset,$numOfRecord");
+	$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search%' AND quantity > 0 ORDER BY id DESC LIMIT $offset,$numOfRecord");
 	$statement->execute();
 	$result = $statement->fetchAll();
 }
@@ -102,21 +102,28 @@ if (empty($_POST['search']) and empty($_COOKIE['search'])) {
 						foreach ($result as $value) { ?>
 							<div class="col-lg-4 col-md-6">
 								<div class="single-product">
-									<img height="255px" width="271px" src="admin/images/<?= escape($value['image']) ?>" alt="">
+									<a href="./product_detail.php?id=<?= $value['id'] ?>"><img height="255px" width="271px" src="admin/images/<?= escape($value['image']) ?>" alt=""></a>
 									<div class="product-details">
 										<h6><?= escape($value['name']) ?></h6>
 										<div class="price">
 											<h6>$<?= $value['price'] ?></h6>
 										</div>
 										<div class="prd-bottom">
-											<a href="" class="social-info">
-												<span class="ti-bag"></span>
-												<p class="hover-text">add to bag</p>
-											</a>
-											<a href="./product_detail.php?id=<?= $value['id'] ?>" class="social-info">
+											<form action="add_to_cart.php" method="post">
+												<input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
+												<input type="hidden" name="id" value="<?= escape($result[0]['id']) ?>">
+												<input type="hidden" name="qty" value="1">
+												<div class="social-info">
+													<button type="submit" style="padding: 0;margin: 0;border: none;background:none">
+														<span class="ti-bag"></span>
+														<p class="hover-text" style="left:20px;">add to bag</p>
+													</button>
+												</div>
+												<a href="./product_detail.php?id=<?= $value['id'] ?>" class="social-info">
 												<span class="lnr lnr-move"></span>
 												<p class="hover-text">view more</p>
 											</a>
+											</form>
 										</div>
 									</div>
 								</div>
