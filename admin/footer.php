@@ -28,6 +28,8 @@
 <script src="./plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="./dist/js/adminlte.min.js"></script>
+<!-- Datatable -->
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
 </body>
 
 </html>

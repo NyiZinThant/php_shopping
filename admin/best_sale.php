@@ -32,6 +32,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="./plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="./dist/css/adminlte.min.css">
+    <!-- DataTable CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -48,6 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                <!-- Navbar Search -->
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -171,94 +174,47 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Order Listings</h3>
+                                    <h3 class="card-title">Weekly Report</h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <?php
-                                    if (!empty($_GET['pageno'])) {
-                                        $pageno = $_GET['pageno'];
-                                    } else {
-                                        $pageno = 1;
-                                    }
-                                    $numOfRecord = 6;
-                                    $offset = ($pageno - 1) * $numOfRecord;
-                                    $statement = $pdo->prepare("SELECT * FROM sale_orders ORDER BY id DESC");
-                                    $statement->execute();
-                                    $rawResult = $statement->fetchAll();
-
-                                    $total_pages = ceil(count($rawResult) / $numOfRecord);
-                                    $statement = $pdo->prepare("SELECT * FROM sale_orders ORDER BY id DESC LIMIT $offset,$numOfRecord");
-                                    $statement->execute();
-                                    $result = $statement->fetchAll();
+                                    $currentDate = date("Y-m-d");
+                                    $stmt = $pdo->prepare("SELECT product_id, SUM(quantity) FROM sale_order_detail GROUP BY product_id;");
+                                    $stmt->execute();
+                                    $result = $stmt->fetchAll();
                                     ?>
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered" id="data-table">
                                         <thead>
                                             <tr>
                                                 <th style="width: 10px">#</th>
-                                                <th>User</th>
-                                                <th>Total Price</th>
-                                                <th>Order Date</th>
-                                                <th style="width: 160px">Actions</th>
+                                                <th>Product</th>
+                                                <th>Sold</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php $i = 1;
-                                            if ($result) : foreach ($result as $value) : ?>
+                                            <?php
+                                            if ($result) {
+                                                $i = 1;
+                                                foreach ($result as $value) { ?>
+
                                                     <?php
-                                                    $userStatement = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                                                    $userStatement->execute([":id" => $value['user_id']]);
-                                                    $userResult = $userStatement->fetchAll();
+                                                    $stmt = $pdo->prepare("SELECT * FROM products WHERE id=" . $value['product_id']);
+                                                    $stmt->execute();
+                                                    $result = $stmt->fetchAll();
                                                     ?>
                                                     <tr>
-                                                        <td><?= $i ?></td>
-                                                        <td><?= escape($userResult[0]['name']) ?></td>
-                                                        <td>
-                                                            <div>
-                                                                $<?= escape($value['total_price']) ?>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div>
-                                                                <?= escape(date('Y-m-d', strtotime($value['order_date']))) ?>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <a href="order_detail.php?id=<?= $value['id'] ?>" class="btn btn-success" type="button">View</a>
-                                                        </td>
+                                                        <td><?= $i; ?></td>
+                                                        <td><?= escape($result[0]['name']) ?></td>
+                                                        <td><?= escape($value[1]) ?></td>
                                                     </tr>
-                                            <?php $i++;
-                                                endforeach;
-                                            endif ?>
+                                            <?php
+                                                    $i++;
+                                                }
+                                            }
+                                            ?>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="mx-3">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination justify-content-end">
-                                            <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
-                                            <li class="page-item <?php if ($pageno <= 1) {
-                                                                        echo "disabled";
-                                                                    } ?>">
-                                                <a class="page-link" href="<?php if ($pageno <= 1) {
-                                                                                echo "#";
-                                                                            } else {
-                                                                                echo "?pageno=" . $pageno - 1;
-                                                                            } ?>">Previous</a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="?pageno=<?= $pageno ?>"><?= $pageno ?></a></li>
-                                            <li class="page-item <?php if ($pageno >= $total_pages) {
-                                                                        echo "disabled";
-                                                                    } ?>">
-                                                <a class="page-link" href="<?php if ($pageno >= $total_pages) {
-                                                                                echo "#";
-                                                                            } else {
-                                                                                echo "?pageno=" . $pageno + 1;
-                                                                            } ?>">Next</a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
-                                        </ul>
-                                    </nav>
                                 </div>
                                 <!-- /.card-body -->
                             </div>
@@ -271,3 +227,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
         <!-- /.content-wrapper -->
         <?php include("footer.php") ?>
+        <script>
+            $(document).ready(function() {
+                $('#data-table').DataTable();
+            });
+        </script>

@@ -5,12 +5,12 @@ require "../config/common.php";
 if (!isset($_SESSION['user_id']) or !isset($_SESSION['logged_in']) or $_SESSION['role'] == 0) {
     header('location: login.php');
 }
-if(isset($_POST['search'])){
-    setcookie('search',$_POST['search'],time() + (86400*30),"/");
-}else{
-    if(empty($_GET['pageno'])){
+if (isset($_POST['search'])) {
+    setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+} else {
+    if (empty($_GET['pageno'])) {
         unset($_COOKIE['search']);
-        setcookie('search',null,-1,"/");
+        setcookie('search', null, -1, "/");
     }
 }
 ?>
@@ -110,8 +110,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </p>
                             </a>
                         </li>
-                         <li class="nav-item">
-                            <a href="index.php" class="nav-link">
+                        <li class="nav-item">
+                            <a href="category.php" class="nav-link">
                                 <i class="nav-icon fas fa-list"></i>
                                 <p>
                                     Categories
@@ -133,6 +133,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     Order
                                 </p>
                             </a>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Reports
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="weekly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Weekly Report
+                                        </p>
+                                    </a>
+                                <li class="nav-item">
+                                    <a href="monthly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Monthly Report
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="royal_cus.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Royal Customer
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="best_sale.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Best Sale Item
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
@@ -172,7 +214,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         $statement->execute();
                                         $result = $statement->fetchAll();
                                     } else {
-                                        $search = isset($_POST['search'])? $_POST['search'] : $_COOKIE['search'];
+                                        $search = isset($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
                                         if (!empty($_GET['pageno'])) {
                                             $pageno = $_GET['pageno'];
                                         } else {

@@ -135,9 +135,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </li>
                         <li class="nav-item">
                             <a href="category.php" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
+                                <i class="nav-icon fas fa-list"></i>
                                 <p>
-                                    Category
+                                    Categories
                                 </p>
                             </a>
                         </li>
@@ -156,6 +156,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     Order
                                 </p>
                             </a>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Reports
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="weekly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Weekly Report
+                                        </p>
+                                    </a>
+                                <li class="nav-item">
+                                    <a href="monthly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Monthly Report
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="royal_cus.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Royal Customer
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="best_sale.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Best Sale Item
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
@@ -195,8 +237,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <p class="text-danger d-inline-block ml-2"><?= empty($categoryError) ? "" : "*" . $categoryError ?></p>
                                             <select name="category" class="form-control" id="category">
                                                 <option value="0" selected>Select Category</option>
-                                                <?php foreach($result as $value): ?>
-                                                <option value="<?= $value['id'] ?>"><?= $value['name'] ?></option>
+                                                <?php foreach ($result as $value) : ?>
+                                                    <option value="<?= $value['id'] ?>"><?= $value['name'] ?></option>
                                                 <?php endforeach ?>
                                             </select>
                                         </div>

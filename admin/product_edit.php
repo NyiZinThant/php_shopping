@@ -44,7 +44,7 @@ if ($_POST) {
     } else {
         if (empty($_FILES['image']['name'])) {
             $statement = $pdo->prepare("UPDATE products SET name=:name,description=:description,category_id=:category_id,quantity=:quantity,price=:price WHERE id=:id");
-            $result = $statement->execute([":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price,":id"=>$_GET['id']]);
+            $result = $statement->execute([":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price, ":id" => $_GET['id']]);
             if ($result) {
                 echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
             }
@@ -57,7 +57,7 @@ if ($_POST) {
             } else {
                 move_uploaded_file($_FILES['image']['tmp_name'], $file,);
                 $statement = $pdo->prepare("UPDATE products SET name=:name,description=:description,category_id=:category_id,quantity=:quantity,price=:price,image=:image WHERE id=:id");
-                $result = $statement->execute([":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price, ":image" => $image,":id"=>$_GET['id']]);
+                $result = $statement->execute([":name" => $name, ":description" => $description, ":category_id" => $category, ":quantity" => $quantity, ":price" => $price, ":image" => $image, ":id" => $_GET['id']]);
                 if ($result) {
                     echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
                 }
@@ -143,9 +143,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </li>
                         <li class="nav-item">
                             <a href="category.php" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
+                                <i class="nav-icon fas fa-list"></i>
                                 <p>
-                                    Category
+                                    Categories
                                 </p>
                             </a>
                         </li>
@@ -164,6 +164,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     Order
                                 </p>
                             </a>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Reports
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="weekly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Weekly Report
+                                        </p>
+                                    </a>
+                                <li class="nav-item">
+                                    <a href="monthly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Monthly Report
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="royal_cus.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Royal Customer
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="best_sale.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Best Sale Item
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>

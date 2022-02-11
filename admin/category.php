@@ -135,6 +135,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Reports
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="weekly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Weekly Report
+                                        </p>
+                                    </a>
+                                <li class="nav-item">
+                                    <a href="monthly_report.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Monthly Report
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="royal_cus.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Royal Customer
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="best_sale.php" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Best Sale Item
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -225,27 +267,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="mx-3">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-end">
-                                        <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
-                                        <li class="page-item <?php if ($pageno <= 1) {
-                                                                    echo "disabled";
-                                                                } ?>">
-                                            <a class="page-link" href="<?php if ($pageno <= 1) {
-                                                                            echo "#";
-                                                                        } else {
-                                                                            echo "?pageno=" . $pageno - 1;
-                                                                        } ?>">Previous</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="?pageno=<?= $pageno ?>"><?= $pageno ?></a></li>
-                                        <li class="page-item <?php if ($pageno >= $total_pages) {
-                                                                    echo "disabled";
-                                                                } ?>">
-                                            <a class="page-link" href="<?php if ($pageno >= $total_pages) {
-                                                                            echo "#";
-                                                                        } else {
-                                                                            echo "?pageno=" . $pageno + 1;
-                                                                        } ?>">Next</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
+                                            <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                                            <li class="page-item <?php if ($pageno <= 1) {
+                                                                        echo "disabled";
+                                                                    } ?>">
+                                                <a class="page-link" href="<?php if ($pageno <= 1) {
+                                                                                echo "#";
+                                                                            } else {
+                                                                                echo "?pageno=" . $pageno - 1;
+                                                                            } ?>">Previous</a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="?pageno=<?= $pageno ?>"><?= $pageno ?></a></li>
+                                            <li class="page-item <?php if ($pageno >= $total_pages) {
+                                                                        echo "disabled";
+                                                                    } ?>">
+                                                <a class="page-link" href="<?php if ($pageno >= $total_pages) {
+                                                                                echo "#";
+                                                                            } else {
+                                                                                echo "?pageno=" . $pageno + 1;
+                                                                            } ?>">Next</a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
                                         </ul>
                                     </nav>
                                 </div>
