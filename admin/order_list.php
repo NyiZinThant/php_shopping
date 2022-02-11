@@ -173,7 +173,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <td><?= escape($userResult[0]['name']) ?></td>
                                                         <td>
                                                             <div>
-                                                                <?= escape($value['total_price']) ?>
+                                                                $<?= escape($value['total_price']) ?>
                                                             </div>
                                                         </td>
                                                         <td>
